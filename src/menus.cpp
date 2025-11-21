@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <windows.h>
@@ -21,42 +22,87 @@ void printLogo() {
     cout << endl;
 }
 
-void presentMainMenu() {
-    cout << "-----------==@==-----------" << endl;
-    cout << "- 1. Pedidos" << endl;
-    cout << "- 2. Estatisticas" << endl;
-    cout << "- 3. Exportar dados (CSV)" << endl;
-    cout << endl;
-    cout << "- 0. Sair" << endl;
-    cout << "-----------==@==-----------" << endl;
-}
-
-MainMenuChoices mainMenuGetChoice() {
+void subMenuOrdersGetChoice() {
     while (true) {
-        presentMainMenu();
+        cout << "-------==@==-------" << endl;
+        cout << "- 1. Criar pedido" << endl;
+        cout << "- 2. Ver pedidos" << endl;
+        cout << "- 4. Remover pedido" << endl;
+        cout << "- 5. Enviar para o fim da fila" << endl;
+        cout << "- 6. Enviar para o início da fila" << endl;
+        cout << endl;
+        cout << "- 0. Voltar ao menu principal" << endl;
+        cout << "-------==@==-------" << endl;
 
-        
         cout << "Escolha uma opção: ";
 
-        string line;
-        if (!getline(cin, line)) {
-            return QUIT;
-        }
-
-        stringstream ss(line);
         int choice;
-        if (!(ss >> choice) || !(ss >> ws).eof() || line.empty()) {
-            cout << "Entrada inválida. Digite um número válido." << endl;
+        cin >> choice;
+
+        if (!cin) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Entrada inválida. Escolha novamente." << endl;
             continue;
         }
 
-        const bool isKnownOption =
-                choice == QUIT || choice == ORDERS ||
-                choice == STATISTICS || choice == EXPORT_TO_CSV;
-        if (isKnownOption) {
-            return static_cast<MainMenuChoices>(choice);
+        switch (choice) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 0:
+                return;
+            default:
+                cout << "Opção inexistente. Escolha novamente." << endl;
+                break;
+        }
+    }
+}
+
+void mainMenuGetChoice() {
+    while (true) {
+        cout << "-----------==@==-----------" << endl;
+        cout << "- 1. Pedidos" << endl;
+        cout << "- 2. Estatisticas" << endl;
+        cout << "- 3. Exportar dados (CSV)" << endl;
+        cout << endl;
+        cout << "- 0. Sair" << endl;
+        cout << "-----------==@==-----------" << endl;
+
+        cout << "Escolha uma opção: ";
+
+        int choice;
+        cin >> choice;
+
+        if (!cin) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Entrada inválida. Escolha novamente." << endl;
+            continue;
         }
 
-        cout << "Opção inexistente. Escolha novamente." << endl;
+        switch (choice) {
+            case 1:
+                subMenuOrdersGetChoice();
+                break;
+            case 2:
+                cout << "Estatísticas ainda não disponíveis." << endl;
+                break;
+            case 3:
+                cout << "Exportação ainda não disponível." << endl;
+                break;
+            case 0:
+                return;
+            default:
+                cout << "Opção inexistente. Escolha novamente." << endl;
+                break;
+        }
     }
 }
