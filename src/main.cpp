@@ -1,5 +1,6 @@
 #include <chrono>
 #include <ctime>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -9,7 +10,7 @@
 
 using namespace std;
 
-string gerarTimestampAtual();
+string gerarTimestampAtual(); //01/01/0001 00:00:00
 
 struct No {
     int id;
@@ -30,6 +31,8 @@ struct ListaPedidos {
 
     ListaPedidos() : inicio(nullptr), fim(nullptr) {}
 };
+
+void exportarDadosCSV(const ListaPedidos &lista);
 
 void inicializarLista(ListaPedidos &lista) {
     lista.inicio = nullptr;
@@ -91,7 +94,7 @@ string escolherCategoria() {
     }
 }
 
-void criarPedidoSimples(ListaPedidos &lista) {
+void criarPedido(ListaPedidos &lista) {
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     cout << "Descreva o produto/pedido: ";
@@ -129,9 +132,9 @@ void subMenuOrdersGetChoice(ListaPedidos &lista) {
         cout << "-------==@==-------" << endl;
         cout << "- 1. Criar pedido" << endl;
         cout << "- 2. Ver pedidos" << endl;
-        cout << "- 4. Remover pedido" << endl;
-        cout << "- 5. Enviar para o fim da fila" << endl;
-        cout << "- 6. Enviar para o início da fila" << endl;
+        cout << "- 3. Remover pedido" << endl;
+        cout << "- 4. Enviar para o fim da fila" << endl;
+        cout << "- 5. Enviar para o início da fila" << endl;
         cout << endl;
         cout << "- 0. Voltar ao menu principal" << endl;
         cout << "-------==@==-------" << endl;
@@ -150,7 +153,7 @@ void subMenuOrdersGetChoice(ListaPedidos &lista) {
 
         switch (choice) {
             case 1:
-                criarPedidoSimples(lista);
+                criarPedido(lista);
                 break;
             case 2:
                 break;
@@ -199,7 +202,7 @@ void mainMenuGetChoice(ListaPedidos &lista) {
                 cout << "Estatísticas ainda não disponíveis." << endl;
                 break;
             case 3:
-                cout << "Exportação ainda não disponível." << endl;
+                exportarDadosCSV(lista);
                 break;
             case 0:
                 return;
@@ -219,6 +222,24 @@ int main() {
     destruirLista(pedidos);
 
     return 0;
+}
+
+void exportarDadosCSV(const ListaPedidos &lista) {
+    ofstream arquivo("pedidos.csv", ios::trunc);
+    if (!arquivo) {
+        cout << "Não foi possível exportar os dados." << endl;
+        return;
+    }
+
+    arquivo << "ID,Descricao,Categoria,Data" << '\n';
+    for (No *atual = lista.inicio; atual != nullptr; atual = atual->proximo) {
+        arquivo << atual->id << ','
+                << atual->descricao << ','
+                << atual->categoria << ','
+                << atual->dataCriacao << '\n';
+    }
+
+    cout << "Dados exportados para pedidos.csv" << endl;
 }
 
 string gerarTimestampAtual() {
